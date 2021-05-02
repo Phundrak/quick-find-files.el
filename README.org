@@ -76,6 +76,18 @@ A couple of variables can be editer by the user in order to configure
   This specific example will recursively search for all ~.org~ files in
   =~/org=, all ~.html~ files in ~/tmp~, and all ~.h~ files in =~/code/C=.
 
+* I don’t want to use Ivy, I want to use <insert ivy alternative here>
+You can still use this package then! I made the function
+~ivy-quick-find-files-list-files~ specifically for this kind of
+situation. For instance, if you are an ido user, you could write an
+~ido-quick-find-files-list-files~ function like so:
+#+begin_src emacs-lisp
+  (defun my/ido-quick-find-files ()
+    (interactive)
+    (find-file (ido-completing-read "Open file: "
+                                    (ivy-quick-find-files-list-files))))
+#+end_src
+
 * Upcoming changes
 Plans exist to customize the maximum depth at which ~find~ and ~fd~ are to
 search for files.
