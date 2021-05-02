@@ -55,6 +55,31 @@ Emacs, such as ~quelpa~ or Spacemacs’ and DoomEmacs’ package managers,
 however I am yet unsure how to install this package with them. If you
 do, feel free to submit a PR with new instructions!
 
+* Customizing
+A couple of variables can be editer by the user in order to configure
+~ivy-quick-find-files.el~:
+- ~ivy-quick-find-files-program~ :: The program to use in order to find
+  your files. The two currently supported options are ~'find~ and ~'fd~.
+- ~ivy-quick-find-files-fd-executable~ :: Specify the executable to use
+  when using the option ~'fd~.
+- ~ivy-quick-find-files-find-executable~ :: Specify the executable to
+  use when using the option ~'find~.
+- ~ivy-quick-find-files-dirs-and-exts~ :: List of pairs between
+  directories and extensions. For one directory, the program will be
+  searching recursively all files with the specified
+  extension. Possible value:
+  #+begin_src emacs-lisp
+    '(("~/org" . "org")
+      ("/tmp" . "html")
+      ("~/code/C" . "h"))
+  #+end_src
+  This specific example will recursively search for all ~.org~ files in
+  ~~/org~, all ~.html~ files in ~/tmp~, and all ~.h~ files in ~~/code/C~.
+
+* Upcoming changes
+Plans exist to customize the maximum depth at which ~find~ and ~fd~ are to
+search for files.
+
 * License 
 ~ivy-quick-find-files.el~ is available under the GNU GPL-3.0
 license. You can find the full text in [[file:LICENSE.md][LICENSE.md]].
