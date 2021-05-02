@@ -20,6 +20,12 @@ time I’m writing this, I would have to manage a hundred keybindings
 for my various org files alone! Unmanageable!
 
 * Installation
+** Prerequisites
+First of all, make sure either ~find~ (which is fairly standard, it
+should be there by default) or [[https://github.com/sharkdp/fd][fd]] are installed on your system, as
+this package relies on one or the other depending on your choices
+(~find~ by default).
+
 ** Local installation
 The vanilla way of installing this package would be to clone this
 repository somewhere in your Emacs’ ~load-path~, or add the following
