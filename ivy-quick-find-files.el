@@ -38,7 +38,7 @@
 
                                         ; Custom variables ;;;;;;;;;;;;;;;;;;;;
 
-(defcustom ivy-quick-find-files-program 'fd
+(defcustom ivy-quick-find-files-program 'find
   "Program to find files on your system.
 
 By default, the value is 'fd, but you can change it to 'find too.
