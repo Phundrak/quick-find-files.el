@@ -104,6 +104,7 @@ Return a list of paths to files."
 
                                         ; Public functions ;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun ivy-quick-find-files-list-files ()
   "List files in directories and with specific extensions.
 
@@ -122,6 +123,7 @@ Return a list of paths to files."
                                 otherwise))))
           ivy-quick-find-files-dirs-and-exts))
 
+;;;###autoload
 (defun ivy-quick-find-files ()
   "Quickly find and open files in directories with specific extensions.
 
