@@ -1,0 +1,60 @@
+#+title: ivy-quick-find-files.el
+#+author: Lucien Cartier-Tilet
+#+email: lucien@phundrak.com
+* Introduction
+~ivy-quick-find-files.el~ is a utility package for all of you out there
+that often find themselves looking for the right file in the right
+place, but you can’t be bothered to have a specific keybinding for
+that particular file for one reason or another.
+
+Now, you have a utility for finding files by directory with an
+associated extension! Let’s say you often open files with a ~.org~
+extension from your directory =~/org/=, this package will try to find it
+insantly for you!
+
+* Motivation
+I often find myself opening a specific set of files, but they are too
+numerous to make each one of them a keybinding. Well, I actually
+could, but I end up with way too much for my taste. In fact, at the
+time I’m writing this, I would have to manage a hundred keybindings
+for my various org files alone! Unmanageable!
+
+* Installation
+** Local installation
+The vanilla way of installing this package would be to clone this
+repository somewhere in your Emacs’ ~load-path~, or add the following
+line to your ~.emacs~ or ~init.el~:
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "/path/to/ivy-quick-find-files.el")
+#+end_src
+
+Then add the following lines to your ~.emacs~ or ~init.el~:
+#+begin_src emacs-lisp
+  (require 'ivy-quick-find-files)
+#+end_src
+
+** Straight + use-package
+My personnal choice in terms of installing packages is using straight
+with use-package. If you are using it too, add the following code to
+your ~.emacs~ or ~init.el~:
+#+begin_src emacs-lisp
+  (use-package ivy-quick-find-files
+    :defer t
+    :ensure t
+    :straight (ivy-quick-find-files :type git
+                                    :host github
+                                    :repo "Phundrak/ivy-quick-find-files.el")
+    :config ; Depending on your preferences of course
+    (setq ivy-quick-find-files-program 'fd
+          ivy-quick-find-files-dirs-and-exts '(("~/org" . "org"))))
+#+end_src
+
+** Other methods
+I am aware other methods are available for installing packages in
+Emacs, such as ~quelpa~ or Spacemacs’ and DoomEmacs’ package managers,
+however I am yet unsure how to install this package with them. If you
+do, feel free to submit a PR with new instructions!
+
+* License 
+~ivy-quick-find-files.el~ is available under the GNU GPL-3.0
+license. You can find the full text in [[file:LICENSE.md][LICENSE.md]].
