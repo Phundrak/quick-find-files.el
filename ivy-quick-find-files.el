@@ -32,13 +32,16 @@
 
 (defgroup ivy-quick-find-files nil
   "Quickly find files by directory and extension."
+  :group 'convenience
   :prefix "ivy-quick-find-files-"
   :link '(url-link :tag "Github" "https://github.com/phundrak/ivy-quick-find-files.el")
   :link '(url-link :tag "Gitea" "https://labs.phundrak.com/phundrak/ivy-quick-find-files.el"))
 
                                         ; Custom variables ;;;;;;;;;;;;;;;;;;;;
 
-(defcustom ivy-quick-find-files-program 'find
+(defcustom ivy-quick-find-files-program (if (executable-find "fd")
+                                            'fd
+                                          'find)
   "Program to find files on your system.
 
 By default, the value is 'fd, but you can change it to 'find too.
@@ -51,12 +54,12 @@ path.  You can customize the executable to use with
   :group 'ivy-quick-find-files
   :type 'symbol)
 
-(defcustom ivy-quick-find-files-fd-executable "fd"
+(defcustom ivy-quick-find-files-fd-executable (executable-find "fd")
   "Executable name or path to the executable of fd."
   :group 'ivy-quick-find-files
   :type 'string)
 
-(defcustom ivy-quick-find-files-find-executable "find"
+(defcustom ivy-quick-find-files-find-executable (executable-find "find")
   "Executable name or path to the executable of find."
   :group 'ivy-quick-find-files
   :type 'string)
@@ -80,27 +83,20 @@ If `OMIT-NULL' is non-null, ignore empty strings."
   (declare (side-effect-free t))
   (split-string str "\\(\r\n\\|[\n\r]\\)" omit-null))
 
-(defun ivy-quick-find-files--fd (dir ext)
-  "Find files in directory `DIR' with extension `EXT' with fd.
+(defun ivy-quick-find-files--find-files (dir ext)
+  "Find files in directory DIR with extension EXT.
 
-Return a list of paths to files."
+Use `fd' or `find' depending on `ivy-quick-find-files-program'.
+Return files as a list of absolute paths."
   (declare (side-effect-free t))
   (ivy-quick-find-files--split-lines
-   (shell-command-to-string (format "fd . %s -e %s -c never"
-                                   dir
-                                   ext))
-   t))
-
-(defun ivy-quick-find-files--find (dir ext)
-  "Find files in directory `DIR' with extension `EXT' with find.
-
-Return a list of paths to files."
-  (declare (side-effect-free t))
-  (ivy-quick-find-files--split-lines
-   (shell-command-to-string (format "find %s -name \"*.%s\""
-                                    dir
-                                    ext))
-   t))
+   (shell-command-to-string (format
+                             (pcase ivy-quick-find-files-program
+                               ('fd "fd . %s -e %s -c never")
+                               ('find "find %s -name \"*.%s\"")
+                               (otherwise (error "Find program %s not implemented" otherwise)))
+                             dir
+                             ext))))
 
                                         ; Public functions ;;;;;;;;;;;;;;;;;;;;
 
@@ -114,13 +110,8 @@ The directories and extensions are specified in the variable
 Return a list of paths to files."
   (declare (side-effect-free t))
   (mapcan (lambda (dir-ext)
-            (pcase ivy-quick-find-files-program
-              ('fd (ivy-quick-find-files--fd (car dir-ext)
-                                             (cdr dir-ext)))
-              ('find (ivy-quick-find-files--find (car dir-ext)
-                                                 (car dir-ext)))
-              (otherwise (error "%s not yet supported for finding files.  Open an issue to request it"
-                                otherwise))))
+            (ivy-quick-find-files--find-files (car dir-ext)
+                                              (cdr dir-ext)))
           ivy-quick-find-files-dirs-and-exts))
 
 ;;;###autoload
