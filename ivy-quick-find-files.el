@@ -74,6 +74,16 @@ extension, such as
   :group 'ivy-quick-find-files
   :type 'list)
 
+(defcustom ivy-quick-find-files-fd-additional-options ""
+  "Additional command-line options for fd."
+  :group 'ivy-quick-find-files
+  :type 'string)
+
+(defcustom ivy-quick-find-files-find-additional-options ""
+  "Additional command-line options for find."
+  :group 'ivy-quick-find-files
+  :type 'string)
+
                                         ; Internal functions ;;;;;;;;;;;;;;;;;;
 
 (defun ivy-quick-find-files--split-lines (str &optional omit-null)
@@ -92,11 +102,15 @@ Return files as a list of absolute paths."
   (ivy-quick-find-files--split-lines
    (shell-command-to-string (format
                              (pcase ivy-quick-find-files-program
-                               ('fd "fd . %s -e %s -c never")
-                               ('find "find %s -name \"*.%s\"")
+                               ('fd "fd . %s -e %s -c never %s")
+                               ('find "find %s -name \"*.%s\" %s")
                                (otherwise (error "Find program %s not implemented" otherwise)))
                              dir
-                             ext))))
+                             ext
+                             (pcase ivy-quick-find-files-program
+                               ('fd ivy-quick-find-files-fd-additional-options)
+                               ('find ivy-quick-find-files-find-additional-options)
+                               (otherwise (error "Find program %s not implemented" otherwise)))))))
 
                                         ; Public functions ;;;;;;;;;;;;;;;;;;;;
 
