@@ -25,10 +25,10 @@
 ;;; Commentary:
 
 ;; quick-find-files.el is a utlity to quickly find files in a specific
-;; directory, with maybe a specific file extension. It can use both
+;; directory, with maybe a specific file extension.  It can use both
 ;; the shell utilities find and fd to quickly find your files and let
-;; you select the file you’re looking for in a completing read
-;; prompt. Refer to the README for more information.
+;; you select the file you’re looking for in a completing read prompt.
+;; Refer to the README for more information.
 
 ;;; Code:
 
@@ -56,7 +56,8 @@ your path.  You can customize the executable to use with
 `quick-find-files-fd-executable' and
 `quind-find-files-find-executable'."
   :group 'quick-find-files
-  :type 'symbol)
+  :type 'symbol
+  :options '(fd find))
 
 (defcustom quick-find-files-fd-executable (executable-find "fd")
   "Executable name or path to the executable of fd."
@@ -68,7 +69,7 @@ your path.  You can customize the executable to use with
   :group 'quick-find-files
   :type 'string)
 
-(defcustom quick-find-files-dirs-and-exts '()
+(defcustom quick-find-files-dirs-and-exts nil
   "List of pairs of directories and extensions.
 
 Each element should be a pair of a directory path and an
@@ -81,7 +82,8 @@ extension, such as
 (defcustom quick-find-files-fd-additional-options ""
   "Additional command-line options for fd."
   :group 'quick-find-files
-  :type 'string)
+  :type 'string
+  :safe #'stringp)
 
 (defcustom quick-find-files-find-additional-options ""
   "Additional command-line options for find."
@@ -125,29 +127,44 @@ Return files as a list of absolute paths."
 
                                         ; Public functions ;;;;;;;;;;;;;;;;;;;;
 
-;;;###autoload
-(defun quick-find-files-list-files ()
+(defun quick-find-files-list-files (dir ext)
   "List files in directories and with specific extensions.
 
 The directories and extensions are specified in the variable
 `quick-find-files-dirs-and-exts'.
 
+If DIR and EXT are non-nil, search only in DIR for files with the
+extension EXT.  Ignore `quick-find-files-dirs-and-exts'.
+
 Return a list of paths to files."
   (declare (side-effect-free t))
-  (mapcan (lambda (dir-ext)
-            (quick-find-files--find-files (car dir-ext)
-                                          (cdr dir-ext)))
-          quick-find-files-dirs-and-exts))
+  (if (and dir ext)
+      (quick-find-files--find-files dir ext)
+    (mapcan (lambda (dir-ext)
+              (quick-find-files--find-files (car dir-ext)
+                                            (cdr dir-ext)))
+            quick-find-files-dirs-and-exts)))
 
 ;;;###autoload
-(defmacro quick-find-files()
+(defun quick-find-files(&optional arg)
   "Quickly find and open files in directories with specific extensions.
 
 Directories in which to look for files with specific extensions
-are specified in `quick-find-files-dirs-and-exts'."
-  (interactive)
-  `(find-file (,quick-find-files-completing-read "Open File: "
-                                                 (quick-find-files-list-files))))
+are specified in `quick-find-files-dirs-and-exts'.
+
+When called interactively with a prefix (i.e. non-nil ARG), ask
+user for the root directory of their search and the file
+extention they are looking for.  When the file extension is left
+empty, all files are to be looked for."
+  (interactive "P")
+  (message "qff prefix: %S" arg)
+  (let (dir ext)
+    (when arg
+      (setq dir (read-file-name "Root directory: "))
+      (setq ext (read-string "File extension (leave blank for all files): ")))
+    (funcall quick-find-files-completing-read
+             "Open file: "
+             (quick-find-files-list-files dir ext))))
 
                                         ; Provides ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
