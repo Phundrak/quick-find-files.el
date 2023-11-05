@@ -1,11 +1,11 @@
-#+title: ivy-quick-find-files.el
+#+title: quick-find-files.el
 #+author: Lucien Cartier-Tilet
 #+email: lucien@phundrak.com
 * Introduction
-~ivy-quick-find-files.el~ is a utility package for all of you out there
-that often find themselves looking for the right file in the right
-place, but you can’t be bothered to have a specific keybinding for
-that particular file for one reason or another.
+~quick-find-files.el~ is a utility package for all of you out there that
+often find themselves looking for the right file in the right place,
+but you can’t be bothered to have a specific keybinding for that
+particular file for one reason or another.
 
 Now, you have a utility for finding files by directory with an
 associated extension! Let’s say you often open files with a ~.org~
@@ -22,37 +22,38 @@ for my various org files alone! Unmanageable!
 * Installation
 ** Prerequisites
 First of all, make sure either ~find~ (which is fairly standard, it
-should be there by default) or [[https://github.com/sharkdp/fd][fd]] are installed on your system, as
+should be there by default) or [[https://github.com/sharkdp/fd][~fd~]] are installed on your system, as
 this package relies on one or the other depending on your choices
 (~find~ by default).
 
 ** Local installation
 The vanilla way of installing this package would be to clone this
 repository somewhere in your Emacs’ ~load-path~, or add the following
-line to your ~.emacs~ or ~init.el~:
+line to your Emacs configuration:
 #+begin_src emacs-lisp
-  (add-to-list 'load-path "/path/to/ivy-quick-find-files.el")
+(add-to-list 'load-path "/path/to/quick-find-files.el")
 #+end_src
 
-Then add the following lines to your ~.emacs~ or ~init.el~:
+Then add the following lines to your configuration:
 #+begin_src emacs-lisp
-  (require 'ivy-quick-find-files)
+(require 'quick-find-files)
 #+end_src
 
 ** Straight + use-package
 My personnal choice in terms of installing packages is using straight
-with use-package. If you are using it too, add the following code to
-your ~.emacs~ or ~init.el~:
+with use-package. Here is my own configuration of ~quick-find-files.el~:
 #+begin_src emacs-lisp
-  (use-package ivy-quick-find-files
-    :defer t
-    :ensure t
-    :straight (ivy-quick-find-files :type git
-                                    :host github
-                                    :repo "Phundrak/ivy-quick-find-files.el")
-    :config ; Depending on your preferences of course
-    (setq ivy-quick-find-files-program 'fd
-          ivy-quick-find-files-dirs-and-exts '(("~/org" . "org"))))
+(use-package quick-find-files
+  :defer t
+  :ensure t
+  :straight (quick-find-files :type git
+                              :host github
+                              :repo "Phundrak/quick-find-files.el")
+  :config ; Depending on your preferences of course
+  (setq quick-find-files-program 'fd
+                                        ; I like ivy
+        quick-find-files-completing-read #'ivy-completing-read
+        quick-find-files-dirs-and-exts '(("~/org" . "org"))))
 #+end_src
 
 ** Other methods
@@ -63,41 +64,28 @@ do, feel free to submit a PR with new instructions!
 
 * Customizing
 A couple of variables can be editer by the user in order to configure
-~ivy-quick-find-files.el~:
-- ~ivy-quick-find-files-program~ :: The program to use in order to find
-  your files. The two currently supported options are ~'find~ and ~'fd~.
-- ~ivy-quick-find-files-fd-executable~ :: Specify the executable to use
-  when using the option ~'fd~.
-- ~ivy-quick-find-files-find-executable~ :: Specify the executable to
-  use when using the option ~'find~.
-- ~ivy-quick-find-files-dirs-and-exts~ :: List of pairs between
-  directories and extensions. For one directory, the program will be
-  searching recursively all files with the specified
-  extension. Possible value:
+~quick-find-files.el~:
+- ~quick-find-files-program~ :: The program to use in order to find your
+  files. The two currently supported options are ~'find~ and ~'fd~.
+- ~quick-find-files-fd-executable~ :: Specify the executable to use when
+  using the option ~'fd~.
+- ~quick-find-files-find-executable~ :: Specify the executable to use
+  when using the option ~'find~.
+- ~quick-find-files-dirs-and-exts~ :: List of pairs between directories
+  and extensions. For one directory, the program will be searching
+  recursively all files with the specified extension. Possible value:
   #+begin_src emacs-lisp
-    '(("~/org" . "org")
-      ("/tmp" . "html")
-      ("~/code/C" . "h"))
+'(("~/org" . "org")
+  ("/tmp" . "html")
+  ("~/code/C" . "h"))
   #+end_src
   This specific example will recursively search for all ~.org~ files in
   =~/org=, all ~.html~ files in ~/tmp~, and all ~.h~ files in =~/code/C=.
 
-* I don’t want to use Ivy, I want to use <insert ivy alternative here>
-You can still use this package then! I made the function
-~ivy-quick-find-files-list-files~ specifically for this kind of
-situation. For instance, if you are an ido user, you could write an
-~ido-quick-find-files-list-files~ function like so:
-#+begin_src emacs-lisp
-  (defun my/ido-quick-find-files ()
-    (interactive)
-    (find-file (ido-completing-read "Open file: "
-                                    (ivy-quick-find-files-list-files))))
-#+end_src
-
 * Upcoming changes
-Plans exist to customize the maximum depth at which ~find~ and ~fd~ are to
-search for files.
+- Plans exist to customize the maximum depth at which ~find~ and ~fd~ are to
+  search for files.
 
-* License 
-~ivy-quick-find-files.el~ is available under the GNU GPL-3.0
-license. You can find the full text in [[file:LICENSE.md][LICENSE.md]].
+* License
+~quick-find-files.el~ is available under the GNU GPL-3.0 license. You
+can find the full text in [[file:LICENSE.md][LICENSE.md]].
