@@ -162,9 +162,9 @@ empty, all files are to be looked for."
     (when arg
       (setq dir (read-file-name "Root directory: "))
       (setq ext (read-string "File extension (leave blank for all files): ")))
-    (funcall quick-find-files-completing-read
-             "Open file: "
-             (quick-find-files-list-files dir ext))))
+    (find-file (funcall quick-find-files-completing-read
+                        "Open file: "
+                        (quick-find-files-list-files dir ext)))))
 
                                         ; Provides ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
