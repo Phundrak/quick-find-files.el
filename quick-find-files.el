@@ -2,9 +2,10 @@
 
 ;; Author: Lucien Cartier-Tilet <lucien@phundrak.com>
 ;; Maintainer: Lucien Cartier-Tilet <lucien@phundrak.com>
-;; Version: 0.1.0
-;; Package-Requires: ((emacs "24"))
+;; Version: 0.2.1
+;; Package-Requires: ((emacs "26"))
 ;; Homepage: https://labs.phundrak.com/phundrak/quick-find-files.el
+;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs
 
@@ -48,8 +49,8 @@
                                       'find)
   "Program to find files on your system.
 
-By default, the value is 'fd, but you can change it to 'find too.
-For now, no other program is supported.
+By default, the value is \\='fd, but you can change it to
+\\='find too.  For now, no other program is supported.
 
 By default, `quick-find-files' will try to find fd or find in
 your path.  You can customize the executable to use with
@@ -75,18 +76,18 @@ your path.  You can customize the executable to use with
 Each element should be a pair of a directory path and an
 extension, such as
 
-'((\"~/Documents/org/\" . \"org\"))"
+\\='((\"~/Documents/org/\" . \"org\"))"
   :group 'quick-find-files
   :type 'list)
 
 (defcustom quick-find-files-fd-additional-options ""
-  "Additional command-line options for fd."
+  "Additional command line options for fd."
   :group 'quick-find-files
   :type 'string
   :safe #'stringp)
 
 (defcustom quick-find-files-find-additional-options ""
-  "Additional command-line options for find."
+  "Additional command line options for find."
   :group 'quick-find-files
   :type 'string)
 
@@ -95,7 +96,8 @@ extension, such as
 
 The function must accept a prompt as its first argument and the
 collection of elements to choose from as its second argument."
-  :group 'quick-find-files)
+  :group 'quick-find-files
+  :type 'function)
 
                                         ; Internal functions ;;;;;;;;;;;;;;;;;;
 
@@ -157,7 +159,6 @@ user for the root directory of their search and the file
 extention they are looking for.  When the file extension is left
 empty, all files are to be looked for."
   (interactive "P")
-  (message "qff prefix: %S" arg)
   (let (dir ext)
     (when arg
       (setq dir (read-file-name "Root directory: "))
