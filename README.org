@@ -12,6 +12,8 @@ associated extension! Let’s say you often open files with a ~.org~
 extension from your directory =~/org/=, this package will try to find it
 insantly for you!
 
+[[file:./assets/quick-find-files.gif]]
+
 * Motivation
 I often find myself opening a specific set of files, but they are too
 numerous to make each one of them a keybinding. Well, I actually
