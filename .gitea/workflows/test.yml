@@ -3,16 +3,43 @@ on: [push, pull_request]
 
 jobs:
   build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         emacs_version:
-          - emacs-26-alpine-ci-eask
-          - emacs-27-alpine-ci-eask
-          - emacs-28-alpine-ci-eask
-          - emacs-29-alpine-ci-eask
-          - emacs-master-alpine-ci-eask
-    runs-on: ${{ matrix.emacs_version }}
+          - 26.3
+          - 27.2
+          - 28.2
+          - 29.1
+          - snapshot
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        id: cache-nix-conf
+        with:
+          path: /etc/nix
+          key: cache-nix-conf-000
+
+      - uses: actions/cache@v3
+        id: cache-nix-packages
+        with:
+          path: /nix
+          key: cache-nix-packages-000
+
+      - uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+
+      - uses: actions/cache@v3
+        id: cache-eask-packages
+        with:
+          path: .eask
+          key: cache-eask-packages-000
+
+      - uses: emacs-eask/setup-eask@master
+        with:
+          version: 'snapshot'
+
       - name: "Execute Eask CI"
         run: make ci
