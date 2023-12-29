@@ -28,7 +28,11 @@ checkdoc:
 
 lint:
 	@echo "Linting..."
+	$(EASK) lint declare
+	$(EASK) lint indent
+	$(EASK) lint keywords
 	$(EASK) lint package
+	$(EASK) lint regexps
 
 clean:
 	$(EASK) clean all

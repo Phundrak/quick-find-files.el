@@ -22,9 +22,11 @@ for my various org files alone! Unmanageable!
 * Installation
 ** Prerequisites
 First of all, make sure either ~find~ (which is fairly standard, it
-should be there by default) or [[https://github.com/sharkdp/fd][~fd~]] are installed on your system, as
+should be there by default) or [[https://github.com/sharkdp/fd][~fd~]] are available on your system, as
 this package relies on one or the other depending on your choices
-(~find~ by default).
+(~find~ by default). On some systems, ~fd~ is installed as ~fdfind~ or
+similar, you may need to configure ~quick-find-files-fd-executable~ if
+you wish to use it.
 
 ** Local installation
 The vanilla way of installing this package would be to clone this
@@ -49,11 +51,11 @@ with use-package. Here is my own configuration of ~quick-find-files.el~:
   :straight (quick-find-files :type git
                               :host github
                               :repo "Phundrak/quick-find-files.el")
-  :config ; Depending on your preferences of course
-  (setq quick-find-files-program 'fd
-                                        ; I like ivy
-        quick-find-files-completing-read #'ivy-completing-read
-        quick-find-files-dirs-and-exts '(("~/org" . "org"))))
+  :custom ; Depending on your preferences, of course
+  (quick-find-files-program 'fd)
+  (quick-find-files-dirs '((:dir "~/org" :ext "org" :ignored ("~/org/config"))
+                           (:dir "~/.emacs.d/lisp" :ext "el")
+                           (:dir "~/Documents/Work/" :ignored ("dir1" "report.docx")))))
 #+end_src
 
 ** Other methods
@@ -66,14 +68,38 @@ do, feel free to submit a PR with new instructions!
 A couple of variables can be editer by the user in order to configure
 ~quick-find-files.el~:
 - ~quick-find-files-program~ :: The program to use in order to find your
-  files. The two currently supported options are ~'find~ and ~'fd~.
+  files. The two currently supported options are ~'find~ and ~'fd~, the
+  former being the default choice.
 - ~quick-find-files-fd-executable~ :: Specify the executable to use when
   using the option ~'fd~.
 - ~quick-find-files-find-executable~ :: Specify the executable to use
   when using the option ~'find~.
-- ~quick-find-files-dirs-and-exts~ :: List of pairs between directories
-  and extensions. For one directory, the program will be searching
-  recursively all files with the specified extension. Possible value:
+- ~quick-find-files-dirs~ :: Specify in which directory the package
+  should search for files. This is a list of property lists which must
+  at least contain a ~:dir~ property.
+
+  An optional ~:ext~ property indicates which file extension to look for
+  in this directory and will exclude all other extensions. Be careful,
+  this may be case-sensitive.
+
+  An optional ~:ignored~ property indicates a list of paths the package
+  will filter out. Paths in this property can be either files or whole
+  directories. If a path is relative, the package will consider the
+  ~:dir~ directory to be its parent path. For instance, in the code
+  below, the package will filter out the directory
+  =~/Documents/Work/CVEs= and the file =~/Documents/Work/report.docx= when
+  searching in =~/Documents/Work=.
+  #+begin_src emacs-lisp
+'((:dir "~/org" :ext "org" :ignored ("~/org/config"))
+  (:dir "~/.emacs.d/lisp" :ext "el")
+  (:dir "~/Documents/Work" :ignored ("CVEs" "report.docx")))
+  #+end_src
+- ~quick-find-files-dirs-and-exts~ :: *DEPRECATED*, use
+  ~quick-find-files-dirs~ instead.
+
+  List of pairs between directories and extensions. For one directory,
+  the program will be searching recursively all files with the
+  specified extension. Possible value:
   #+begin_src emacs-lisp
 '(("~/org" . "org")
   ("/tmp" . "html")
@@ -85,7 +111,11 @@ A couple of variables can be editer by the user in order to configure
 * Upcoming changes
 - Plans exist to customize the maximum depth at which ~find~ and ~fd~ are to
   search for files.
+- Search for multiple extensions within the same directory with a
+  future ~:exts~ property in ~quick-find-files-dirs~.
+- Exclude specific extensions when searching for all files with a
+  future ~:ignored-exts~ property in ~quick-find-files-dirs~.
 
 * License
 ~quick-find-files.el~ is available under the GNU GPL-3.0 license. You
-can find the full text in [[file:LICENSE.md][LICENSE.md]].
+can find the full text in [[file:LICENSE][LICENSE]].

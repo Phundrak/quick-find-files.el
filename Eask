@@ -1,5 +1,5 @@
 (package "quick-find-files"
-         "0.2.1"
+         "0.3.0"
          "Quickly find files in directories and by extension")
 
 (website-url "https://labs.phundrak.com/phundrak/quick-find-files.el")
