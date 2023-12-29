@@ -148,7 +148,7 @@ Return a list of paths to files."
             quick-find-files-dirs-and-exts)))
 
 ;;;###autoload
-(defun quick-find-files(&optional arg)
+(defun quick-find-files (&optional arg dir ext)
   "Quickly find and open files in directories with specific extensions.
 
 Directories in which to look for files with specific extensions
@@ -159,15 +159,14 @@ user for the root directory of their search and the file
 extention they are looking for.  When the file extension is left
 empty, all files are to be looked for."
   (interactive "P")
-  (let (dir ext)
-    (when arg
-      (setq dir (read-file-name "Root directory: "))
-      (setq ext (read-string "File extension (leave blank for all files): ")))
-    (find-file (funcall quick-find-files-completing-read
-                        "Open file: "
-                        (quick-find-files-list-files dir ext)))))
+  (when arg
+    (setq dir (read-file-name "Root directory: "))
+    (setq ext (read-string "File extension (leave blank for all files): ")))
+  (find-file (funcall quick-find-files-completing-read
+                      "Open file: "
+                      (quick-find-files-list-files dir ext))))
 
-                                        ; Provides ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                      ; Provides ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'quick-find-files)
 
