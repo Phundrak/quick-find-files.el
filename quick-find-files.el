@@ -146,7 +146,6 @@ Change members of IGNORED-PATHS so that they are all absolute
 paths.  Paths that are relative paths are considered to be
 relative to ROOT-DIR."
   (when ignored-paths
-    (message "%S" ignored-paths)
     (mapcar (lambda (path)
               (expand-file-name path root-dir))
             ignored-paths)))
